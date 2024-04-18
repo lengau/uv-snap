@@ -1,0 +1,35 @@
+name: Update
+
+on:
+  # Runs at 10:00 UTC every day
+  schedule:
+    - cron:  '0 10 * * *'
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write  # Let the default token commit and push.
+
+jobs:
+  sync:
+    name: 🔄 Sync version with upstream
+    environment: "Candidate Branch"
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🔄 Sync version with upstream
+        uses: snapcrafters/ci/sync-version@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          update-script: |
+            VERSION=$(
+              curl -sL https://api.github.com/repos/astral-sh/ruff/releases/latest | jq -r .tag_name | tr -d "v"
+            )
+            sed -i 's/^\(version: \).*$/\1'"$VERSION"'/' snap/snapcraft.yaml
+            LSP_VERSION=$(
+              curl -sL https://api.github.com/repos/astral-sh/ruff-lsp/releases/latest | jq -r .tag_name | tr -d "v"
+            )
+            sed -i "s/\(source-tag: v\).*  # LSP/\1$LSP_VERSION  # LSP/" snap/snapcraft.yaml

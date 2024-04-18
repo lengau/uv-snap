@@ -1,0 +1,99 @@
+name: Release
+
+on:
+  # Run the workflow each time new commits are pushed to the candidate branch.
+  push:
+    branches: [ "candidate", "beta", "edge" ]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  get-architectures:
+    name: 🖥 Get snap architectures
+    runs-on: ubuntu-latest
+    outputs:
+      architectures: ${{ steps.get-architectures.outputs.architectures }}
+      architectures-list: ${{ steps.get-architectures.outputs.architectures-list }}
+    steps:
+      - name: 🖥 Get snap architectures
+        id: get-architectures
+        uses: snapcrafters/ci/get-architectures@main
+
+  release:
+    name: 🚢 Release to latest/candidate
+    needs: get-architectures
+    runs-on: ubuntu-latest
+    environment: "Candidate Branch"
+    strategy:
+      fail-fast: false
+      matrix:
+        architecture: ${{ fromJSON(needs.get-architectures.outputs.architectures-list) }}
+    steps:
+      - name: Detect channel
+        id: get_channel
+        run: |
+          if [[ "${GITHUB_REF_NAME}" == "candidate" ]]; then
+            echo "channel=latest/candidate" >> $GITHUB_OUTPUT
+          elif [[ "${GITHUB_REF_NAME}" == "beta" ]]; then
+            echo "channel=latest/beta" >> $GITHUB_OUTPUT
+          elif [[ "${GITHUB_REF_NAME}" == "edge" ]]; then
+            echo "channel=latest/edge" >> $GITHUB_OUTPUT
+          else
+            echo "channel=latesst/edge/${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
+          fi
+      - name: 🚢 Release on snapcraft.io
+        uses: snapcrafters/ci/release-to-candidate@main
+        with:
+          channel: ${{ steps.get_channel.outputs.channel }}
+          architecture: ${{ matrix.architecture }}
+          launchpad-token: ${{ secrets.LP_BUILD_SECRET }}
+          repo-token: ${{ secrets.SNAPCRAFTERS_BOT_COMMIT }}
+          store-token: ${{ secrets.SNAP_STORE_CANDIDATE }}
+
+  call-for-testing:
+    name: 📣 Create call for testing
+    needs: [release, get-architectures]
+    environment: "Candidate Branch"
+    runs-on: ubuntu-latest
+    outputs:
+      issue-number: ${{ steps.issue.outputs.issue-number }}
+    steps:
+      - name: 📣 Create call for testing
+        id: issue
+        uses: snapcrafters/ci/call-for-testing@main
+        with:
+          architectures: ${{ needs.get-architectures.outputs.architectures }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  test:
+    name: 🗒️ Test snap
+    needs: call-for-testing
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🗒️ Run tests
+        uses: snapcrafters/ci/run-tests@main
+        with:
+          issue-number: ${{ needs.call-for-testing.outputs.issue-number }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          test-script: ./test.sh
+
+  # Commented out because this is a CLI app.
+  # screenshots:
+  #   name: 📸 Gather screenshots
+  #   needs: call-for-testing
+  #   environment: "Candidate Branch"
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: 📸 Gather screenshots
+  #       uses: snapcrafters/ci/get-screenshots@main
+  #       with:
+  #         issue-number: ${{ needs.call-for-testing.outputs.issue-number }}
+  #         github-token: ${{ secrets.GITHUB_TOKEN }}
+  #         screenshots-token: ${{ secrets.SNAPCRAFTERS_BOT_COMMIT }}
