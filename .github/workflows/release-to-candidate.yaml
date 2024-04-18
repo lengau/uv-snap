@@ -22,9 +22,13 @@ jobs:
       architectures: ${{ steps.get-architectures.outputs.architectures }}
       architectures-list: ${{ steps.get-architectures.outputs.architectures-list }}
     steps:
-      - name: 🖥 Get snap architectures
+      # - name: 🖥 Get snap architectures
+      #   id: get-architectures
+      #   uses: snapcrafters/ci/get-architectures@main
+      - name: Get snap architectures
         id: get-architectures
-        uses: snapcrafters/ci/get-architectures@main
+        run: |
+          echo 'architectures-list=["amd64"]' >> $GITHUB_OUTPUT
 
   release:
     name: 🚢 Release to latest/candidate
