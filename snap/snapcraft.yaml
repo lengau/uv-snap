@@ -8,6 +8,13 @@ description: |
 grade: devel # must be 'stable' to release into candidate/stable channels
 confinement: classic
 
+platforms:
+  amd64:
+  arm64:
+  ppc64el:
+  riscv64:
+  s390x:
+
 parts:
   uv:
     plugin: rust
@@ -17,8 +24,6 @@ parts:
       - cmake
     build-attributes:
       - enable-patchelf
-    stage-packages:
-      - git
     organize:
       uv: bin/uv
       uv-dev: bin/uv-dev
@@ -27,9 +32,5 @@ parts:
 apps:
   uv:
     command: bin/uv
-    plugs:
-      - home
-      - removable-media
-      - network
     environment:
       PATH: $SNAP/bin:$SNAP/usr/bin:$PATH
