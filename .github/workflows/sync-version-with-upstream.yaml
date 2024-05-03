@@ -24,6 +24,7 @@ jobs:
         uses: snapcrafters/ci/sync-version@main
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
           update-script: |
             VERSION=$(
               curl -sL https://api.github.com/repos/astral-sh/ruff/releases/latest | jq -r .tag_name | tr -d "v"
