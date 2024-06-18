@@ -1,6 +1,6 @@
 name: astral-uv
 base: core24
-version: 0.2.11
+version: 0.2.12
 summary: An extremely fast Python package installer and resolver, written in Rust.
 description: |
   An extremely fast Python package installer and resolver, written in Rust. Designed as a drop-in replacement for common pip and pip-tools workflows.
