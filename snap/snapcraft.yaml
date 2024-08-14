@@ -19,7 +19,7 @@ parts:
   uv:
     plugin: rust
     source: https://github.com/astral-sh/uv.git
-    source-tag: 0.1.33
+    source-tag: $SNAPCRAFT_PROJECT_VERSION
     build-packages:
       - cmake
     build-attributes:
