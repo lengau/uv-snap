@@ -27,10 +27,19 @@ parts:
     organize:
       uv: bin/uv
       uv-dev: bin/uv-dev
+      uvx: bin/uvx
       lib*.so: lib/
 
 apps:
   uv:
     command: bin/uv
+    environment:
+      PATH: $SNAP/bin:$SNAP/usr/bin:$PATH
+  uv-dev:
+    command: bin/uv-dev
+    environment:
+      PATH: $SNAP/bin:$SNAP/usr/bin:$PATH
+  uvx:
+    command: bin/uvx
     environment:
       PATH: $SNAP/bin:$SNAP/usr/bin:$PATH
