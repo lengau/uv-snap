@@ -29,12 +29,19 @@ parts:
       uv-dev: bin/uv-dev
       uvx: bin/uvx
       lib*.so: lib/
-
+  completion:
+    plugin: nil
+    after: [uv]
+    override-build: |
+      "${CRAFT_STAGE}/bin/uv" generate-shell-completion bash > "${CRAFT_PART_INSTALL}/uv-completion.bash"
+      echo 'complete -F _uv -o bashdefault -o default astral-uv.uv' >> "${CRAFT_PART_INSTALL}/uv-completion.bash"
+      echo 'complete -F _uv -o bashdefault -o default uv' >> "${CRAFT_PART_INSTALL}/uv-completion.bash"
 apps:
   uv:
     command: bin/uv
     environment:
       PATH: $SNAP/bin:$SNAP/usr/bin:$PATH
+    completer: uv-completion.bash
   uv-dev:
     command: bin/uv-dev
     environment:
