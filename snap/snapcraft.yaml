@@ -26,7 +26,6 @@ parts:
       - enable-patchelf
     organize:
       uv: bin/uv
-      uv-dev: bin/uv-dev
       uvx: bin/uvx
       lib*.so: lib/
   completion:
@@ -42,10 +41,6 @@ apps:
     environment:
       PATH: $SNAP/bin:$SNAP/usr/bin:$PATH
     completer: uv-completion.bash
-  uv-dev:
-    command: bin/uv-dev
-    environment:
-      PATH: $SNAP/bin:$SNAP/usr/bin:$PATH
   uvx:
     command: bin/uvx
     environment:
