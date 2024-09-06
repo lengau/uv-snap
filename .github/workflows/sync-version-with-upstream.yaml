@@ -1,9 +1,9 @@
 name: Update
 
 on:
-  # Runs at 10:00 UTC every day
+  # Run hourly
   schedule:
-    - cron:  '0 10 * * *'
+    - cron:  '0 * * * *'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
