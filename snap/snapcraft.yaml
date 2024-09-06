@@ -5,7 +5,7 @@ summary: An extremely fast Python package installer and resolver, written in Rus
 description: |
   An extremely fast Python package installer and resolver, written in Rust. Designed as a drop-in replacement for common pip and pip-tools workflows.
 
-grade: devel # must be 'stable' to release into candidate/stable channels
+grade: stable
 confinement: classic
 
 platforms:
