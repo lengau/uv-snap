@@ -30,6 +30,17 @@ parts:
       uv: bin/uv
       uvx: bin/uvx
       lib*.so: lib/
+    override-build: |
+      if [[ "${CRAFT_ARCH_BUILD_FOR}" == "armhf" ]]; then
+        # Requires too much RAM to build on armhf, so we cheat and use the upstream binary.
+        # This is preferable to cross-compiling because Launchpad won't cross-compile and
+        # I really don't want to try to keep up with cross-compiling and releasing for
+        # armhf every time there's a release. If someone comes up with a better answer
+        # I'd love to replace this with a real build.
+        curl -sL https://github.com/astral-sh/uv/releases/download/$SNAPCRAFT_PROJECT_VERSION/uv-armv7-unknown-linux-gnueabihf.tar.gz | tar xz -C "${CRAFT_PART_INSTALL}" --strip-components=1
+      else
+        craftctl default
+      fi
   completion:
     plugin: nil
     after: [uv]
