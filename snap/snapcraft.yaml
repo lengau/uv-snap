@@ -44,9 +44,9 @@ parts:
     override-build: |
       rustup target add armv7-unknown-linux-gnueabihf
       craftctl default
-      # manually install binaries
+      # manually install binaries as their target dir differs
       find ./target/armv7-unknown-linux-gnueabihf/release -maxdepth 1 -executable -exec install -Dvm755 '{}' /root/parts/uv/install ';'
- 
+
     # override-build: |
     #   if [[ "${CRAFT_ARCH_BUILD_FOR}" == "armhf" ]]; then
     #     # Requires too much RAM to build on armhf, so we cheat and use the upstream binary.
