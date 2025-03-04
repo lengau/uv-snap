@@ -45,8 +45,7 @@ parts:
       rustup target add armv7-unknown-linux-gnueabihf
       craftctl default
       # manually install binaries as their target dir differs
-      install -dm 755 /root/parts/uv/install
-      find ./target/armv7-unknown-linux-gnueabihf/release -maxdepth 1 -executable -exec install -Dvm755 '{}' /root/parts/uv/install/ ';'
+      find ./target/armv7-unknown-linux-gnueabihf/release -maxdepth 1 -executable -exec install -Dvm755 '{}' "${CRAFT_PART_INSTALL}/" ';'
 
     # override-build: |
     #   if [[ "${CRAFT_ARCH_BUILD_FOR}" == "armhf" ]]; then
