@@ -65,7 +65,7 @@ parts:
       arm-linux-gnueabihf-readelf -a "${CRAFT_STAGE}/bin/uv" | grep "Shared library:"
 
       echo "###### The End"
-      LD_LIBRARY_PATH=/usr/arm-linux-gnueabihf/lib/ "${CRAFT_STAGE}/bin/uv" generate-shell-completion bash > "${CRAFT_PART_INSTALL}/uv-completion.bash"
+      /usr/arm-linux-gnueabihf/lib/ld-linux-armhf.so.3 --library-path /usr/arm-linux-gnueabihf/lib/ "${CRAFT_STAGE}/bin/uv" generate-shell-completion bash > "${CRAFT_PART_INSTALL}/uv-completion.bash"
       echo 'complete -F _uv -o bashdefault -o default astral-uv.uv' >> "${CRAFT_PART_INSTALL}/uv-completion.bash"
       echo 'complete -F _uv -o bashdefault -o default uv' >> "${CRAFT_PART_INSTALL}/uv-completion.bash"
 apps:
