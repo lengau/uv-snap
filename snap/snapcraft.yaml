@@ -42,7 +42,6 @@ parts:
         - CARGO_BUILD_TARGET: $(echo $CRAFT_ARCH_TRIPLET_BUILD_FOR | sed -e s/-linux/-unknown-linux/ -e s/armhf/armv7/)
       - RUSTFLAGS: -C linker=${CRAFT_ARCH_TRIPLET_BUILD_FOR}-gcc
     override-pull: |
-      apt-get remove --yes cmake rustc
       rustup target add $CARGO_BUILD_TARGET
       craftctl default
   completion:
