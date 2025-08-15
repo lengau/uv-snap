@@ -13,6 +13,7 @@ platforms:
   amd64:
   arm64:
   armhf:
+    build-on: [amd64, arm64]  # Runs out of memory building on armhf
   ppc64el:
   riscv64:
   s390x:
@@ -23,31 +24,36 @@ parts:
     source: https://github.com/astral-sh/uv.git
     source-tag: $SNAPCRAFT_PROJECT_VERSION
     build-packages:
-      - cmake
+      - to armhf:
+          - gcc-arm-linux-gnueabihf
+          - libc6-dev-armhf-cross
+    rust-path:
+      - crates/uv
+    build-snaps:
+      - rustup
     build-attributes:
       - enable-patchelf
     organize:
       uv: bin/uv
       uvx: bin/uvx
       lib*.so: lib/
-    override-build: |
-      if [[ "${CRAFT_ARCH_BUILD_FOR}" == "armhf" ]]; then
-        # Requires too much RAM to build on armhf, so we cheat and use the upstream binary.
-        # This is preferable to cross-compiling because Launchpad won't cross-compile and
-        # I really don't want to try to keep up with cross-compiling and releasing for
-        # armhf every time there's a release. If someone comes up with a better answer
-        # I'd love to replace this with a real build.
-        curl -sL https://github.com/astral-sh/uv/releases/download/$SNAPCRAFT_PROJECT_VERSION/uv-armv7-unknown-linux-gnueabihf.tar.gz | tar xz -C "${CRAFT_PART_INSTALL}" --strip-components=1
-      else
-        craftctl default
-      fi
+    build-environment:
+      - to armhf:
+        - CARGO_BUILD_TARGET: $(echo $CRAFT_ARCH_TRIPLET_BUILD_FOR | sed -e s/-linux/-unknown-linux/ -e s/armhf/armv7/)
+      - RUSTFLAGS: -C linker=${CRAFT_ARCH_TRIPLET_BUILD_FOR}-gcc
+    override-pull: |
+      apt-get remove --yes cmake rustc
+      rustup target add $CARGO_BUILD_TARGET
+      craftctl default
   completion:
     plugin: nil
     after: [uv]
     override-build: |
-      "${CRAFT_STAGE}/bin/uv" generate-shell-completion bash > "${CRAFT_PART_INSTALL}/uv-completion.bash"
-      echo 'complete -F _uv -o bashdefault -o default astral-uv.uv' >> "${CRAFT_PART_INSTALL}/uv-completion.bash"
-      echo 'complete -F _uv -o bashdefault -o default uv' >> "${CRAFT_PART_INSTALL}/uv-completion.bash"
+      if [[ "$CRAFT_ARCH_TRIPLET_BUILD_FOR" == "$CRAFT_ARCH_TRIPLET_BUILD_ON" ]]; then
+        "${CRAFT_STAGE}/bin/uv" generate-shell-completion bash > "${CRAFT_PART_INSTALL}/uv-completion.bash"
+        echo 'complete -F _uv -o bashdefault -o default astral-uv.uv' >> "${CRAFT_PART_INSTALL}/uv-completion.bash"
+        echo 'complete -F _uv -o bashdefault -o default uv' >> "${CRAFT_PART_INSTALL}/uv-completion.bash"
+      fi
 apps:
   uv:
     command: bin/uv
