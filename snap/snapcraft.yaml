@@ -26,6 +26,12 @@ parts:
       - cmake
     build-attributes:
       - enable-patchelf
+    build-environment:
+      # See: https://github.com/lengau/uv-snap/issues/10
+      - to arm64:
+        - JEMALLOC_SYS_WITH_LG_PAGE: 16
+      - to ppc64el:
+        - JEMALLOC_SYS_WITH_LG_PAGE: 16
     organize:
       uv: bin/uv
       uvx: bin/uvx
