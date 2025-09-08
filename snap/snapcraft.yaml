@@ -22,8 +22,6 @@ parts:
     plugin: rust
     source: https://github.com/astral-sh/uv.git
     source-tag: $SNAPCRAFT_PROJECT_VERSION
-    build-packages:
-      - cmake
     build-attributes:
       - enable-patchelf
     build-environment:
