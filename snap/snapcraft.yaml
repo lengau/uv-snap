@@ -1,7 +1,7 @@
 name: astral-uv
 title: uv (by Astral)
 base: core24
-version: 0.6.3
+version: 0.9.3
 summary: An extremely fast Python package installer and resolver, written in Rust.
 description: |
   An extremely fast Python package installer and resolver, written in Rust. Designed as a drop-in replacement for common pip and pip-tools workflows.
@@ -46,18 +46,6 @@ parts:
       craftctl default
       # manually install binaries as their target dir differs
       find ./target/armv7-unknown-linux-gnueabihf/release -maxdepth 1 -executable -exec install -Dvm755 '{}' "${CRAFT_PART_INSTALL}/" ';'
-
-    # override-build: |
-    #   if [[ "${CRAFT_ARCH_BUILD_FOR}" == "armhf" ]]; then
-    #     # Requires too much RAM to build on armhf, so we cheat and use the upstream binary.
-    #     # This is preferable to cross-compiling because Launchpad won't cross-compile and
-    #     # I really don't want to try to keep up with cross-compiling and releasing for
-    #     # armhf every time there's a release. If someone comes up with a better answer
-    #     # I'd love to replace this with a real build.
-    #     curl -sL https://github.com/astral-sh/uv/releases/download/$SNAPCRAFT_PROJECT_VERSION/uv-armv7-unknown-linux-gnueabihf.tar.gz | tar xz -C "${CRAFT_PART_INSTALL}" --strip-components=1
-    #   else
-    #     craftctl default
-    #   fi
   completion:
     plugin: nil
     after: [uv]
