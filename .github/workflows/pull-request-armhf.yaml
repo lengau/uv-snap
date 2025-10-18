@@ -1,0 +1,18 @@
+name: Pull Request (armhf)
+
+on:
+  pull_request:
+    branches:
+      - candidate-armhf
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-arm:
+    name: 🧪 Build snap on arm64
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - name: 🧪 Build snap on arm64
+        uses: snapcrafters/ci/test-snap-build@main
