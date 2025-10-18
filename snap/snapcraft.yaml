@@ -31,7 +31,7 @@ parts:
       - to ppc64el:
         - JEMALLOC_SYS_WITH_LG_PAGE: "16"
     build-packages:
-      - libclang- 20-dev
+      - libclang-20-dev
     organize:
       uv: bin/uv
       uvx: bin/uvx
