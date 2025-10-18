@@ -1,0 +1,26 @@
+name: Pull Request
+
+on:
+  pull_request:
+    branches:
+      - candidate
+      - edge
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: 🧪 Build snap on amd64
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🧪 Build snap on amd64
+        uses: snapcrafters/ci/test-snap-build@main
+
+  build-arm:
+    name: 🧪 Build snap on arm64
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - name: 🧪 Build snap on arm64
+        uses: snapcrafters/ci/test-snap-build@main

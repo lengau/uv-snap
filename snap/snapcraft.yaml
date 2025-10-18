@@ -1,6 +1,7 @@
 name: astral-uv
 title: uv (by Astral)
 base: core24
+version: git
 summary: An extremely fast Python package installer and resolver, written in Rust.
 description: |
   An extremely fast Python package installer and resolver, written in Rust. Designed as a drop-in replacement for common pip and pip-tools workflows.
@@ -12,7 +13,6 @@ confinement: classic
 platforms:
   amd64:
   arm64:
-  armhf:
   ppc64el:
   riscv64:
   s390x:
@@ -21,10 +21,16 @@ parts:
   uv:
     plugin: rust
     source: https://github.com/astral-sh/uv.git
-    build-packages:
-      - cmake
     build-attributes:
       - enable-patchelf
+    build-environment:
+      # See: https://github.com/lengau/uv-snap/issues/10
+      - to arm64:
+        - JEMALLOC_SYS_WITH_LG_PAGE: "16"
+      - to ppc64el:
+        - JEMALLOC_SYS_WITH_LG_PAGE: "16"
+    build-packages:
+      - libclang-20-dev
     organize:
       uv: bin/uv
       uvx: bin/uvx
