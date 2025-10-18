@@ -1,0 +1,34 @@
+name: Update
+
+on:
+  # Run daily
+  schedule:
+    - cron:  '0 0 * * *'
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write  # Let the default token commit and push.
+
+jobs:
+  update:
+    name: Force a cache sync
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Update
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          date -I > last-refresh.txt
+          git add last-refresh.txt
+          git config --global user.name "Workflow[bot]"
+          git config --global user.email "lulz@github.com"
+          git commit -m 'chore: refresh'
+          git push
