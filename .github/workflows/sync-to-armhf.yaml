@@ -55,7 +55,7 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         fetch-depth: 0
-        ref: edge
+        ref: edge-armhf
     - name: Merge from candidate
       run: |
         git pull
