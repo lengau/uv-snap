@@ -1,0 +1,30 @@
+name: Sync edge to edge-armhf
+
+on:
+  push:
+    branches:
+      - edge
+
+permissions:
+  issues: write
+  contents: write
+
+jobs:
+  sync-edge-armhf:
+    name: 🔄 Sync candidate branch to edge-armhf
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout the source
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0
+        ref: edge-armhf
+    - name: Merge from edge
+      run: |
+        git pull
+        git config --global user.name "Snapcrafters[bot]"
+        git config --global user.email "bot@bot.bot"
+
+        git merge origin/edge -m 'chore: merge edge to edge-armhf'
+        git push
