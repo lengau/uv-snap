@@ -26,5 +26,5 @@ jobs:
         git config --global user.name "Snapcrafters[bot]"
         git config --global user.email "bot@bot.bot"
 
-        git merge origin/edge -m 'chore: merge candidate to edge-armhf'
+        git merge origin/edge -m 'chore: merge edge to edge-armhf'
         git push
