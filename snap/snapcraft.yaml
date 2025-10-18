@@ -28,23 +28,21 @@ parts:
     plugin: rust
     source: https://github.com/astral-sh/uv.git
     source-tag: $SNAPCRAFT_PROJECT_VERSION
-    build-packages:
-      - cmake
-      - gcc-arm-linux-gnueabihf
-      - libc6-dev-$CRAFT_ARCH_BUILD_FOR-cross
-    build-environment:
-      - CARGO_BUILD_TARGET: "armv7-unknown-linux-gnueabihf"
-      - CARGO_TARGET_ARMV7_UNKNOWN_LINUX_GNUEABIHF_LINKER: arm-linux-gnueabihf-gcc
     build-attributes:
       - enable-patchelf
     build-environment:
+      - CARGO_BUILD_TARGET: "armv7-unknown-linux-gnueabihf"
+      - CARGO_TARGET_ARMV7_UNKNOWN_LINUX_GNUEABIHF_LINKER: arm-linux-gnueabihf-gcc
       # See: https://github.com/lengau/uv-snap/issues/10
       - to arm64:
         - JEMALLOC_SYS_WITH_LG_PAGE: "16"
       - to ppc64el:
         - JEMALLOC_SYS_WITH_LG_PAGE: "16"
     build-packages:
-      - libclang- 20-dev
+      - libclang-20-dev
+      - cmake
+      - gcc-arm-linux-gnueabihf
+      - libc6-dev-$CRAFT_ARCH_BUILD_FOR-cross
     organize:
       uv: bin/uv
       uvx: bin/uvx
