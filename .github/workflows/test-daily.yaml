@@ -1,0 +1,36 @@
+name: Daily tests
+
+on:
+  # Run daily
+  schedule:
+    - cron:  '0 0 * * *'
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Test the latest snap
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - ubuntu-24.04-arm
+        channel:
+          - latest/stable
+          - latest/candidate
+          - latest/edge
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Install
+        run: |
+          sudo snap install --classic --channel ${{ matrix.channel }} astral-uv
+      - name: checkout
+        uses: actions/checkout@v5
+      - name: Test
+        run: |
+          ./test.sh
