@@ -29,4 +29,7 @@ jobs:
             VERSION=$(
               curl -sL https://api.github.com/repos/astral-sh/uv/releases/latest | jq -r .tag_name | tr -d "v"
             )
+            if [[ -z "${VERSION}" ]]; then
+              exit
+            fi
             sed -i 's/^\(version: \).*$/\1'"$VERSION"'/' snap/snapcraft.yaml
