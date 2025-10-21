@@ -21,18 +21,22 @@ package-repositories:
 
 platforms:
   armhf:
-    build-on: [arm64]
+    build-on: [arm64, amd64]
     build-for: [armhf]
 
 parts:
   uv:
     plugin: rust
     source: https://github.com/astral-sh/uv.git
-    build-attributes:
-      - enable-patchelf
+    # build-attributes:  # Disabled due to https://github.com/canonical/snapcraft/issues/5836
+    #   - enable-patchelf
     build-environment:
-      - CARGO_BUILD_TARGET: "armv7-unknown-linux-gnueabihf"
-      - CARGO_TARGET_ARMV7_UNKNOWN_LINUX_GNUEABIHF_LINKER: arm-linux-gnueabihf-gcc
+      # Build a static binary. Needed for armhf because of https://github.com/canonical/snapcraft/issues/5836
+      - CARGO_BUILD_TARGET: armv7-unknown-linux-musleabihf
+      - CARGO_TARGET_ARMV7_UNKNOWN_LINUX_MUSLEABIHF_LINKER: rust-lld
+      - CARGO_CFG_TARGET_FEATURE: crt-static
+      - CC: clang-20
+      - CARGO_PROFILE_RELEASE_LTO: "off"
       # See: https://github.com/lengau/uv-snap/issues/10
       - to arm64:
         - JEMALLOC_SYS_WITH_LG_PAGE: "16"
@@ -43,21 +47,26 @@ parts:
       - cmake
       - gcc-arm-linux-gnueabihf
       - libc6-dev-$CRAFT_ARCH_BUILD_FOR-cross
+      # Use clang for the armhf build so we can build for musl.
+      - clang-20
+      - musl-dev
+      - musl-tools
+    # rust-features:
+    #   - crt-static
     organize:
       uv: bin/uv
       uvx: bin/uvx
       lib*.so: lib/
     override-build: |
-      rustup target add armv7-unknown-linux-gnueabihf
+      rustup target add ${CARGO_BUILD_TARGET}
       craftctl default
       # manually install binaries as their target dir differs
-      find ./target/armv7-unknown-linux-gnueabihf/release -maxdepth 1 -executable -exec install -Dvm755 '{}' "${CRAFT_PART_INSTALL}/" ';'
+      find ./target/${CARGO_BUILD_TARGET}/release -maxdepth 1 -executable -exec install -Dvm755 '{}' "${CRAFT_PART_INSTALL}/" ';'
   completion:
     plugin: nil
     after: [uv]
     override-build: |
-      # Run it using armv7 `ld-linux` directly on arm64
-      /usr/arm-linux-gnueabihf/lib/ld-linux-armhf.so.3 --library-path /usr/arm-linux-gnueabihf/lib/ "${CRAFT_STAGE}/bin/uv" generate-shell-completion bash > "${CRAFT_PART_INSTALL}/uv-completion.bash"
+      "${CRAFT_STAGE}/bin/uv" generate-shell-completion bash > "${CRAFT_PART_INSTALL}/uv-completion.bash"
       echo 'complete -F _uv -o bashdefault -o default astral-uv.uv' >> "${CRAFT_PART_INSTALL}/uv-completion.bash"
       echo 'complete -F _uv -o bashdefault -o default uv' >> "${CRAFT_PART_INSTALL}/uv-completion.bash"
       craftctl set version="$("${CRAFT_STAGE}/bin/uv" --version | cut -d' ' -f2-4 | tr ' ' '-' | tr -d '()' )"
