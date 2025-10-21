@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - candidate
+  workflow-dispatch:
+  workflow-call:
 
 permissions:
   issues: write
