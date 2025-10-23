@@ -6,6 +6,9 @@ on:
     - cron:  '0 0 * * *'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+  push:
+    branches:
+      - edge
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
