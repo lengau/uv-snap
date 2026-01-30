@@ -41,6 +41,5 @@ test_install django django-allauth django-anymail django-appconf django-axes \
     django-ses django-silk django-storages django-stubs django-stubs-ext django-taggit \
     django-timezone-field django-treebeard django-waffle django-webpack-loader \
     django-widget-tweaks
-test_install lisa@git+https://github.com/microsoft/lisa
 test_install yt-dlp@https://github.com/yt-dlp/yt-dlp/archive/refs/tags/2024.04.09.zip
 test_install flask@https://github.com/pallets/flask/archive/refs/tags/3.0.3.tar.gz
