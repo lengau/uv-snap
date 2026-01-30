@@ -26,6 +26,9 @@ jobs:
           - latest/edge
     runs-on: ${{ matrix.os }}
     steps:
+      - name: Pristine Ubuntu
+        if: ${{ runner.os == 'Linux' && runner.environment == 'github-hosted' }}
+        uses: lengau/pristine-ubuntu-action@v0
       - name: Install
         run: |
           sudo snap install --classic --channel ${{ matrix.channel }} astral-uv
