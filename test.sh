@@ -13,7 +13,7 @@ test_install(){
     echo -e "::group::\e[32mBASIC\e[0m: Install $@"
     astral-uv.uv pip install --strict $@
     echo -e "::endgroup::"_
-    rm -rf $(pwd)
+    rm -rf $(pwd) &
 }
 
 test_install cryptography pydantic numpy pendulum pillow pandas
