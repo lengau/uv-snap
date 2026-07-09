@@ -1,7 +1,7 @@
 name: astral-uv
 title: uv (by Astral)
 base: core24
-version: 0.11.13
+version: 0.11.28
 summary: An extremely fast Python package installer and resolver, written in Rust.
 description: |
   An extremely fast Python package installer and resolver, written in Rust. Designed as a drop-in replacement for common pip and pip-tools workflows.
@@ -69,6 +69,12 @@ parts:
       "${CRAFT_STAGE}/bin/uv" generate-shell-completion bash > "${CRAFT_PART_INSTALL}/uv-completion.bash"
       echo 'complete -F _uv -o bashdefault -o default astral-uv.uv' >> "${CRAFT_PART_INSTALL}/uv-completion.bash"
       echo 'complete -F _uv -o bashdefault -o default uv' >> "${CRAFT_PART_INSTALL}/uv-completion.bash"
+  license:
+    plugin: dump
+    source: .
+    source-subdir: licenses
+    organize:
+      "*": usr/share/doc/uv/
 apps:
   uv:
     command: bin/uv
