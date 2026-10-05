@@ -43,6 +43,12 @@ parts:
       echo 'complete -F _uv -o bashdefault -o default astral-uv.uv' >> "${CRAFT_PART_INSTALL}/uv-completion.bash"
       echo 'complete -F _uv -o bashdefault -o default uv' >> "${CRAFT_PART_INSTALL}/uv-completion.bash"
       craftctl set version="$("${CRAFT_STAGE}/bin/uv" --version | cut -d' ' -f2-4 | tr ' ' '-' | tr -d '()' )"
+  license:
+    plugin: dump
+    source: .
+    source-subdir: licenses
+    organize:
+      "*": usr/share/doc/uv/
 apps:
   uv:
     command: bin/uv
