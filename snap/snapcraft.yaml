@@ -37,6 +37,10 @@ parts:
       - CARGO_CFG_TARGET_FEATURE: crt-static
       - CC: clang-20
       - CARGO_PROFILE_RELEASE_LTO: "off"
+      # Clang cross-compiles C dependencies (like aws-lc-sys) against libc6-dev-armhf-cross
+      # (glibc) headers because Ubuntu lacks an armhf musl dev package. On glibc 2.38+, _GNU_SOURCE
+      # redirects strtol to __isoc23_strtol, which does not exist in musl libc. Alias it at link time.
+      - RUSTFLAGS: "-C link-arg=--defsym=__isoc23_strtol=strtol"
       # See: https://github.com/lengau/uv-snap/issues/10
       - to arm64:
         - JEMALLOC_SYS_WITH_LG_PAGE: "16"
@@ -70,6 +74,12 @@ parts:
       echo 'complete -F _uv -o bashdefault -o default astral-uv.uv' >> "${CRAFT_PART_INSTALL}/uv-completion.bash"
       echo 'complete -F _uv -o bashdefault -o default uv' >> "${CRAFT_PART_INSTALL}/uv-completion.bash"
       craftctl set version="$("${CRAFT_STAGE}/bin/uv" --version | cut -d' ' -f2-4 | tr ' ' '-' | tr -d '()' )"
+  license:
+    plugin: dump
+    source: .
+    source-subdir: licenses
+    organize:
+      "*": usr/share/doc/uv/
 apps:
   uv:
     command: bin/uv
