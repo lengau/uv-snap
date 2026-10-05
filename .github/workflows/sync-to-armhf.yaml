@@ -28,7 +28,7 @@ jobs:
         git config --global user.name "Snapcrafters[bot]"
         git config --global user.email "bot@bot.bot"
 
-        git merge origin/candidate -m 'chore: merge candidate to candidate-armhf'
+        git merge origin/candidate -s ort -X ours -m 'chore: merge candidate to candidate-armhf'
         git push
   sync-edge:
     name: 🔄 Sync candidate branch to edge
@@ -46,7 +46,7 @@ jobs:
         git config --global user.name "Snapcrafters[bot]"
         git config --global user.email "bot@bot.bot"
 
-        git merge origin/candidate -m 'chore: merge candidate to edge'
+        git merge origin/candidate -s ort -X ours -m 'chore: merge candidate to edge'
         git push
   sync-edge-armhf:
     name: 🔄 Sync candidate branch to edge-armhf
@@ -57,12 +57,12 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         fetch-depth: 0
-        ref: edge
+        ref: edge-armhf
     - name: Merge from candidate
       run: |
         git pull
         git config --global user.name "Snapcrafters[bot]"
         git config --global user.email "bot@bot.bot"
 
-        git merge origin/candidate -m 'chore: merge candidate to edge-armhf'
+        git merge origin/candidate -s ort -X ours -m 'chore: merge candidate to edge-armhf'
         git push
