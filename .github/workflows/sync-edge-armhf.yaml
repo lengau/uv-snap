@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   sync-edge-armhf:
-    name: 🔄 Sync candidate branch to edge-armhf
+    name: 🔄 Sync edge branch to edge-armhf
     runs-on: ubuntu-latest
     steps:
     - name: Checkout the source
@@ -26,5 +26,5 @@ jobs:
         git config --global user.name "Snapcrafters[bot]"
         git config --global user.email "bot@bot.bot"
 
-        git merge origin/edge -m 'chore: merge edge to edge-armhf'
+        git merge origin/edge -s ort -X ours -m 'chore: merge edge to edge-armhf'
         git push
