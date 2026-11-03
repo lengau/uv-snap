@@ -6,6 +6,9 @@ on:
     - cron:  '0 0 * * *'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/test-daily.yaml
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -31,7 +34,7 @@ jobs:
         uses: lengau/pristine-ubuntu-action@v0
       - name: Install
         run: |
-          if [[ '${{ matrix.channel }} == 'latest/edge' ]]; then
+          if [[ '${{ matrix.channel }}' == 'latest/edge' ]]; then
             sudo snap install --edge core26
           fi
           sudo snap install --classic --channel ${{ matrix.channel }} astral-uv
