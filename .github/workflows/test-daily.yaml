@@ -31,7 +31,7 @@ jobs:
         uses: lengau/pristine-ubuntu-action@v0
       - name: Install
         run: |
-          if [[ '${{ matrix.channel }} == 'latest/edge' ]]; then
+          if [[ '${{ matrix.channel }}' == 'latest/edge' ]]; then
             sudo snap install --edge core26
           fi
           sudo snap install --classic --channel ${{ matrix.channel }} astral-uv
